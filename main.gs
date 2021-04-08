@@ -4,13 +4,13 @@
 function createGarminEventGoogleCalendar() {
 
   const csv = new Csv();
-  const csvFile = csv.getCsvFile();
+  const csvFile = csv.getFile();
   if (!csvFile) return;
   csv.createBackup(csvFile);
-
+  
   const sheet = new Sheet();
   const strDates = sheet.getStringDates();
-  const csvValues = csv.getCsvValues(csvFile);
+  const csvValues = csv.getValues(csvFile);
   const newValues = csvValues.filter(record => !strDates.includes(new Date(record[1]).toDateString()));
   if (!newValues.length) return;
 
@@ -34,7 +34,7 @@ class Csv {
    * csv ファイルを取得するメソッド
    * @return {Object} csv ファイルがある場合はそのオブジェクトを、ない場合は null を返すメソッド
    */
-  getCsvFile() {
+  getFile() {
     try {
       const folderId = PROPS.getProperty('DOWNLOAD_FOLDER_ID');
       const folder = DriveApp.getFolderById(folderId);
@@ -58,7 +58,7 @@ class Csv {
    * @param {Object} csv ファイル
    * @return {Object[][]} csv ファイルから取得した値
    */
-  getCsvValues(csvFile) {
+  getValues(csvFile) {
     const csvData = csvFile.getBlob().getDataAsString();
     const csvValues = Utilities.parseCsv(csvData);
     csvValues.shift();
@@ -110,8 +110,8 @@ class Activity {
 
   /**
    * アクティビティに関するコンストラクタ
-  * @param {Object[]} record - オブジェクトを生成する行
-  */
+   * @param {Object[]} record - オブジェクトを生成する行
+   */
   constructor(record) {
     [
       this.type,

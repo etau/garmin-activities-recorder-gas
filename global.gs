@@ -1,6 +1,6 @@
 /** 
  * GitHub README.md
- * https://github.com/etau/garmin-activities-recorder/blob/main/README.md
+ * https://github.com/etau/garmin-activities-recorder-gas/blob/main/README.md
  */
 
 
