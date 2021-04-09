@@ -7,7 +7,7 @@ function createGarminEventGoogleCalendar() {
   const csvFile = csv.getFile();
   if (!csvFile) return;
   csv.createBackup(csvFile);
-  
+
   const sheet = new Sheet();
   const strDates = sheet.getStringDates();
   const csvValues = csv.getValues(csvFile);
@@ -95,7 +95,7 @@ class Sheet {
    * @param {Object[][]} cavValues - csv ファイルから取得した値
    */
   operate(csvValues) {
-    Toolkit.setValuesLastRowAfter(this.sheet, csvValues);
+    Toolkit.appendValues(this.sheet, csvValues);
     Toolkit.sortDataRows(this.sheet, 2, false);
   }
 

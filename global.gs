@@ -45,7 +45,7 @@ class Toolkit {
    * @param {Object} sheet - 値を貼り付けるシート
    * @param {Object[][]} values - 貼り付ける値
    */
-  static setValuesLastRowAfter(sheet, values) {
+  static appendValues(sheet, values) {
     sheet.getRange(sheet.getLastRow() + 1, 1, values.length, values[0].length).setValues(values);
   }
 
