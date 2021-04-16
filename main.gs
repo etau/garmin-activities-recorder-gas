@@ -11,12 +11,14 @@ function createGarminEventGoogleCalendar() {
   const sheet = new Sheet();
   const strDates = sheet.getStringDates();
   const csvValues = csv.getValues(csvFile);
-  const newValues = csvValues.filter(record => !strDates.includes(new Date(record[1]).toDateString()));
+  const newValues = csvValues.filter(
+    record => !strDates.includes(new Date(record[1]).toDateString())
+  );
   if (!newValues.length) return;
 
   for (const record of newValues) {
     const activity = new Activity(record);
-    activity.createActivityEvent();
+    activity.createGoogleCalendarEvent();
   }
 
   sheet.operate(newValues);
@@ -36,7 +38,7 @@ class Csv {
    */
   getFile() {
     try {
-      const folderId = PROPS.getProperty('DOWNLOAD_FOLDER_ID');
+      const folderId = Toolkit.props.getProperty('DOWNLOAD_FOLDER_ID');
       const folder = DriveApp.getFolderById(folderId);
       const csvFile = folder.getFilesByType(MimeType.CSV).next();  // MEMO: csv ファイルがない場合の処理、try catch の対象
       return csvFile;
@@ -48,9 +50,10 @@ class Csv {
    * @param {Object} csvFile - csv ファイル 
    */
   createBackup(csvFile) {
-    const folderId = PROPS.getProperty('ARCHIVE_FOLDER_ID');
+    const folderId = Toolkit.props.getProperty('ARCHIVE_FOLDER_ID');
     const archiveFolder = DriveApp.getFolderById(folderId);
-    archiveFolder.createFile(csvFile.getBlob()).setName(Toolkit.fomatDate() + ' Activities.csv');
+    archiveFolder.createFile(csvFile.getBlob()).
+      setName(Toolkit.fomatDate() + ' Activities.csv');
   }
 
   /**
@@ -61,8 +64,8 @@ class Csv {
   getValues(csvFile) {
     const csvData = csvFile.getBlob().getDataAsString();
     const csvValues = Utilities.parseCsv(csvData);
-    csvValues.shift();
-    return csvValues;
+    const csvDataValues = csvValues.filter((_record, i) => i >= 1);
+    return csvDataValues;
   }
 
 }
@@ -77,26 +80,41 @@ class Sheet {
   /**
    * シートに関するコンストラクタ
    */
-  constructor(sheet = SHEET) {
+  constructor(sheet = SpreadsheetApp.getActiveSheet()) {
     this.sheet = sheet;
-    this.dataValues = Toolkit.getDataValues(this.sheet);
+    this.values = sheet.getDataRange().getValues();
+  }
+
+  /**
+   * @return {Object[][]} ヘッダー部分をのぞいた実データ
+   */
+  getDataValues() {
+    const dataValues = this.values.filter((_record, i) => i >= 1);
+    return dataValues;
   }
 
   /**
    * 過去のアクティビティログの日付を文字列で取得するメソッド
-   * @return {Object[]} 文字列の日付の値
+   * @return {string[]} 文字列の日付の値
    */
   getStringDates() {
-    return this.dataValues.map(record => record[1].toDateString());
+    const dateValues = this.getDataValues();
+    const strDates = dateValues.map(record => record[1].toDateString());
+    return strDates;
   }
 
   /**
    * 対象シートの操作 (行追加・ソート) をするメソッド
-   * @param {Object[][]} cavValues - csv ファイルから取得した値
+   * @param {Object[][]} values - csv ファイルから取得した値
    */
-  operate(csvValues) {
-    Toolkit.appendValues(this.sheet, csvValues);
-    Toolkit.sortDataRows(this.sheet, 2, false);
+  operate(values) {
+    this.sheet.
+      getRange(this.sheet.getLastRow() + 1, 1, values.length, values[0].length).
+      setValues(values);
+
+    this.sheet.
+      getRange(2, 1, this.sheet.getLastRow() - 1, this.sheet.getLastColumn()).
+      sort({ column: 2, ascending: false });
   }
 
 }
@@ -157,14 +175,15 @@ class Activity {
       'カロリー: ' + this.kilocalories + ' kcal\n' +
       'タイム: ' + this.time + '\n' +
       '平均心拍数:' + this.heartRate;
-    return { description: description };
+    const options = { description: description };
+    return options;
   }
 
   /**
    * 新しく追加されたアクティビティをカレンダーに反映するメソッド
    */
-  createActivityEvent() {
-    const calendarId = PROPS.getProperty('GARMIN_CALENDAR_ID');
+  createGoogleCalendarEvent() {
+    const calendarId = Toolkit.props.getProperty('GARMIN_CALENDAR_ID');
     const calendar = CalendarApp.getCalendarById(calendarId);
     calendar.createEvent(this.title, this._getStartTme(), this._getEndTime(), this._getOptions());
   }
