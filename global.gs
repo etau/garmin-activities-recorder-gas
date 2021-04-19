@@ -6,23 +6,57 @@
 
 
 /**
- * 頻出ツールをまとめた静的クラス
+ * 日付に関するオブジェクトを生成するクラス
  */
-class Toolkit {
+class Now {
 
   /**
-   * 日付をフォーマットするメソッド
-   * @param {Object} d - Date オブジェクト
-   * @param {string} format - 日付のフォーマット
-   * @return {string} 指定のフォーマットに変更した文字列型の日付
+   * @param {Date} date - Date オブジェクト 文字列型も可
    */
-  static fomatDate(d = this.date, format = 'yyyyMMdd_HHmm') {
+  constructor(date = new Date()) {
+    this.date = date;
+    this.string = this.fomatDate(this.date, 'yyyy/MM/dd HH:mm:ss');
+  }
+
+  /**
+   * 文字列型の日付を生成するメソッド
+   * @param {Date} d - Date オブジェクト 文字列型も可
+   * @param {string} format - フォーマットする形式
+   * @return {string} フォーマットされた文字列型の日付
+   */
+  fomatDate(d = this.date, format = 'yyyyMMdd_HHmm') {
     const date = new Date(d);
-    const strDate = Utilities.formatDate(date, 'JST', format);
-    return strDate;
+    const stringDate = Utilities.formatDate(date, 'JST', format);
+    return stringDate;
   }
 
 }
 
-Toolkit.date = new Date();
-Toolkit.props = PropertiesService.getScriptProperties();
+const NOW = Object.freeze(new Now());
+
+
+
+/**
+ * プロパティ ストアに関するクラス
+ */
+class Properties {
+
+  constructor() {
+    this.props = PropertiesService.getScriptProperties();
+    this.calendarId = this.props.getProperty('GARMIN_CALENDAR_ID');
+    this.downloadFolderId = this.props.getProperty('DOWNLOAD_FOLDER_ID');
+    this.archiveFolderId = this.props.getProperty('ARCHIVE_FOLDER_ID');
+  }
+
+  /**
+   * プロパティ ストアにキーと値をセットするメソッド
+   * @param {string} key - プロパティ ストアのキー
+   * @param {stirng} value - プロパティ ストアの値
+   */
+  static setProperty(key, value) {
+    this.props.setProperty(key, value);
+  }
+
+}
+
+const PROPS = Object.freeze(new Properties());
