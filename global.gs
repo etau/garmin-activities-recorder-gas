@@ -8,7 +8,7 @@
 /**
  * 日付に関するオブジェクトを生成するクラス
  */
-class Now {
+class Datetime {
 
   /**
    * @param {Date} date - Date オブジェクト 文字列型も可
@@ -32,7 +32,7 @@ class Now {
 
 }
 
-const NOW = Object.freeze(new Now());
+const datetime = Object.freeze(new Datetime());
 
 
 

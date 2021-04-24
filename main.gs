@@ -58,7 +58,7 @@ class Csv {
    */
   createBackupFile(csvFile = this.file) {
     const archiveFolder = DriveApp.getFolderById(PROPS.archiveFolderId);
-    const fileName = NOW.fomatDate() + ' Activities.csv';
+    const fileName = datetime.fomatDate() + ' Activities.csv';
     archiveFolder.
       createFile(csvFile.getBlob()).
       setName(fileName);
@@ -115,23 +115,47 @@ class Sheet {
   }
 
   /**
-   * @return {Object[][]} ヘッダー部分をのぞいた実データ
-   */
-  getDataValues() {
-    const dataValues = this.values.
-      filter((_, i) => i >= 1);
-    return dataValues;
-  }
-
-  /**
    * 過去のアクティビティログの日付を文字列で取得するメソッド
    * @return {string[]} 文字列の日付の値
    */
   getStringDates() {
-    const dateValues = this.getDataValues();
-    const strDates = dateValues.
-      map(record => record[1].toDateString());
+    const maps = this._getMaps();
+    const strDates = maps.
+      map(map => map.get('日付').toDateString());
     return strDates;
+  }
+
+  /**
+   * ヘッダーをキーとした Map の配列を作成するメソッド
+   * @return {Map[]} ヘッダーをキーとした Map
+   */
+  _getMaps() {
+    const headers = this._getHeaders();
+    const values = this._getDataValues();
+    const maps = values.
+      map(record => record.
+        reduce((acc, cur, i) => acc.set(headers[i], cur), new Map()));
+    return maps;
+  }
+
+  /**
+   * ヘッダーを取得するメソッド
+   * @return {string[]} ヘッダーの値
+   */
+  _getHeaders() {
+    const headers = this.values.
+      filter((_, i) => i < 1)[0];
+    return headers;
+  }
+
+  /**
+   * 実データ部分を取得するメソッド
+   * @return {Object[][]} ヘッダー部分をのぞいた実データ
+   */
+  _getDataValues() {
+    const dataValues = this.values.
+      filter((_, i) => i >= 1);
+    return dataValues;
   }
 
   /**
