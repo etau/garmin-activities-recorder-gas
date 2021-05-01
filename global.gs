@@ -15,7 +15,7 @@ class Datetime {
    */
   constructor(date = new Date()) {
     this.date = date;
-    this.string = this.fomatDate(this.date, 'yyyy/MM/dd HH:mm:ss');
+    this.string = Datetime.format(this.date);
   }
 
   /**
@@ -24,7 +24,7 @@ class Datetime {
    * @param {string} format - フォーマットする形式
    * @return {string} フォーマットされた文字列型の日付
    */
-  fomatDate(d = this.date, format = 'yyyyMMdd_HHmm') {
+  static format(d = new Date(), format = 'yyyyMMdd_HHmm') {
     const date = new Date(d);
     const stringDate = Utilities.formatDate(date, 'JST', format);
     return stringDate;
@@ -32,7 +32,7 @@ class Datetime {
 
 }
 
-const datetime = Object.freeze(new Datetime());
+const DT = Object.freeze(new Datetime());
 
 
 

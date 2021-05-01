@@ -58,7 +58,7 @@ class Csv {
    */
   createBackupFile(csvFile = this.file) {
     const archiveFolder = DriveApp.getFolderById(PROPS.archiveFolderId);
-    const fileName = datetime.fomatDate() + ' Activities.csv';
+    const fileName = DT.string + ' Activities.csv';
     archiveFolder.
       createFile(csvFile.getBlob()).
       setName(fileName);
@@ -119,7 +119,7 @@ class Sheet {
    * @return {string[]} 文字列の日付の値
    */
   getStringDates() {
-    const maps = this._getMaps();
+    const maps = this._getDicts();
     const strDates = maps.
       map(map => map.get('日付').toDateString());
     return strDates;
@@ -129,13 +129,13 @@ class Sheet {
    * ヘッダーをキーとした Map の配列を作成するメソッド
    * @return {Map[]} ヘッダーをキーとした Map
    */
-  _getMaps() {
+  _getDicts() {
     const headers = this._getHeaders();
     const values = this._getDataValues();
-    const maps = values.
+    const dicts = values.
       map(record => record.
         reduce((acc, cur, i) => acc.set(headers[i], cur), new Map()));
-    return maps;
+    return dicts;
   }
 
   /**
