@@ -84,7 +84,7 @@ class Csv {
   getNewRecords(strDates) {
     const csvValues = this._getValues();
     const newRecords = csvValues.
-      filter(record => !strDates.includes(new Date(record[1]).toDateString()));
+      filter(record => !strDates.includes(new Date(/* 日付 */ record[1]).toDateString()));
     return newRecords;
   }
 
