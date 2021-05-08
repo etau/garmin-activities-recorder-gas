@@ -48,15 +48,6 @@ class Properties {
     this.archiveFolderId = this.props.getProperty('ARCHIVE_FOLDER_ID');
   }
 
-  /**
-   * プロパティ ストアにキーと値をセットするメソッド
-   * @param {string} key - プロパティ ストアのキー
-   * @param {stirng} value - プロパティ ストアの値
-   */
-  static setProperty(key, value) {
-    this.props.setProperty(key, value);
-  }
-
 }
 
 const PROPS = Object.freeze(new Properties());
