@@ -12,10 +12,9 @@ function createGarminEventGoogleCalendar() {
   const newRecords = csv.getNewRecords(strDates);
   if (!csv.hasRecords(newRecords)) return;
 
-  for (const record of newRecords) {
-    const activity = new Activity(record);
-    activity.createGoogleCalendarEvent();
-  }
+  newRecords.
+    map(newRecord => new Activity(newRecord)).
+    forEach(activity => activity.createGoogleCalendarEvent());
 
   sheet.operate(newRecords);
 
