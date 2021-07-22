@@ -4,6 +4,7 @@
 class Csv {
 
   /**
+   * csv ファイルに関するコンストラクタ
    * @constructor
    */
   constructor() {

@@ -4,6 +4,7 @@
 class Datetime {
 
   /**
+   * 日付に関するコンストラクタ
    * @constructor
    * @param {Date} date - Date オブジェクト 文字列型も可
    */

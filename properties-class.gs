@@ -4,6 +4,7 @@
 class Properties {
 
   /**
+   * スクリプト プロパティに関するコンストラクタ
    * @constructor
    */
   constructor() {
