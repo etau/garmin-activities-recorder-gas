@@ -67,7 +67,7 @@ class Activity {
    * 新しく追加されたアクティビティをカレンダーに反映するメソッド
    */
   createGoogleCalendarEvent() {
-    const calendar = CalendarApp.getCalendarById(PS.getProperty('GARMIN_CALENDAR_ID'));
+    const calendar = CalendarApp.getCalendarById(SP.getProperty('GARMIN_CALENDAR_ID'));
     calendar.createEvent(
       this.title,
       this.getStartTme(),

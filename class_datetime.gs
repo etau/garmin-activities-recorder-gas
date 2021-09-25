@@ -33,7 +33,7 @@ class Datetime {
    * @return {string} フォーマットされた文字列型の日付
    */
   static format(d = new Date(), format = 'yyyyMMdd_HHmm') {
-    new Type(date, TYPE.DATE); new Type(format, TYPE.STRING);
+    new Type(d, TYPE.DATE); new Type(format, TYPE.STRING);
     const date = new Date(d);
     const stringDate = Utilities.formatDate(date, 'JST', format);
     return stringDate;

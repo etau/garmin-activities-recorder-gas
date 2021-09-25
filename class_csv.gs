@@ -19,7 +19,7 @@ class Csv {
    */
   getFile() {
     try {
-      const folder = DriveApp.getFolderById(PS.getProperty('DOWNLOAD_FOLDER_ID'));
+      const folder = DriveApp.getFolderById(SP.getProperty('DOWNLOAD_FOLDER_ID'));
       const csvFile = folder.getFilesByType(MimeType.CSV).next();
       return csvFile;
     } catch (e) { return null; }
@@ -38,7 +38,7 @@ class Csv {
    * @param {DriveApp.File} csvFile - csv ファイル 
    */
   createBackupFile(csvFile = this.file) {
-    const archiveFolder = DriveApp.getFolderById(PS.getProperty('ARCHIVE_FOLDER_ID'));
+    const archiveFolder = DriveApp.getFolderById(SP.getProperty('ARCHIVE_FOLDER_ID'));
     const fileName = DT.toString() + ' Activities.csv';
     archiveFolder.
       createFile(csvFile.getBlob()).
