@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * プロパティ ストアに関するクラス
  */
@@ -12,6 +14,14 @@ class Properties {
     this.calendarId = this.scriptProperties.getProperty('GARMIN_CALENDAR_ID');
     this.downloadFolderId = this.scriptProperties.getProperty('DOWNLOAD_FOLDER_ID');
     this.archiveFolderId = this.scriptProperties.getProperty('ARCHIVE_FOLDER_ID');
+  }
+
+  /** 
+   * プロパティストアの内容をすべてログする
+   */
+  log() {
+    const properties = this.scriptProperties.getProperties();
+    console.log(properties);
   }
 
 }
