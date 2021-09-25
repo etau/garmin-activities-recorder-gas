@@ -9,5 +9,6 @@
 /**
  * グローバル定数宣言
  */
-const PROPS = Object.freeze(new Properties());
+const PROPERTIES = Object.freeze(new Properties());
+const SP = Object.freeze(PROPERTIES.scriptProperties);
 const DT = Object.freeze(new Datetime());

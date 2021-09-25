@@ -10,19 +10,19 @@ class Csv {
    * @constructor
    */
   constructor() {
-    this.file = this._getFile();
+    this.file = this.getFile();
   }
 
   /**
    * csv ファイルを取得するメソッド
    * @return {Object} csv ファイルがある場合はそのオブジェクトを、ない場合は null を返すメソッド
    */
-  _getFile() {
+  getFile() {
     try {
-      const folder = DriveApp.getFolderById(PROPS.downloadFolderId);
-      const csvFile = folder.getFilesByType(MimeType.CSV).next();  // MEMO: csv ファイルがない場合の処理、try catch の対象
+      const folder = DriveApp.getFolderById(PS.getProperty('DOWNLOAD_FOLDER_ID'));
+      const csvFile = folder.getFilesByType(MimeType.CSV).next();
       return csvFile;
-    } catch (e) { return null }
+    } catch (e) { return null; }
   }
 
   /**
@@ -38,8 +38,8 @@ class Csv {
    * @param {DriveApp.File} csvFile - csv ファイル 
    */
   createBackupFile(csvFile = this.file) {
-    const archiveFolder = DriveApp.getFolderById(PROPS.archiveFolderId);
-    const fileName = DT.string + ' Activities.csv';
+    const archiveFolder = DriveApp.getFolderById(PS.getProperty('ARCHIVE_FOLDER_ID'));
+    const fileName = DT.toString() + ' Activities.csv';
     archiveFolder.
       createFile(csvFile.getBlob()).
       setName(fileName);
@@ -50,11 +50,10 @@ class Csv {
    * @param {DriveApp.File} csv ファイル
    * @return {Array.<Array<number|string>>} csv ファイルから取得した値
    */
-  _getValues(csvFile = this.file) {
+  getValues(csvFile = this.file) {
     const csvData = csvFile.getBlob().getDataAsString();
     const csvValues = Utilities.parseCsv(csvData);
-    const csvDataValues = csvValues.
-      filter((_, i) => i >= 1);
+    const csvDataValues = csvValues.filter((_, i) => i >= 1);
     return csvDataValues;
   }
 
@@ -64,9 +63,9 @@ class Csv {
    * @return {Array.<Array.<number|string>>} 新規レコード
    */
   getNewRecords(strDates) {
-    const csvValues = this._getValues();
+    const csvValues = this.getValues();
     const newRecords = csvValues.
-      filter(record => !strDates.includes(new Date(/* 日付 */ record[1]).toDateString()));
+      filter(record => !strDates.includes(new Date(record[/* B 列: 日付 */ 1]).toDateString()));
     return newRecords;
   }
 

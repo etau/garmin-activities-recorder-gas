@@ -11,6 +11,7 @@ class Sheet {
    * @param {SpreadsheetApp.sheet} sheet - スプレッドシート オブジェクト
    */
   constructor(sheet = SpreadsheetApp.getActiveSheet()) {
+    new Type(sheet, TYPE.SHEET);
     this.sheet = sheet;
   }
 
@@ -19,22 +20,20 @@ class Sheet {
    * @return {Array.<string>} 文字列の日付の値
    */
   getStringDates() {
-    const dicts = this._getDicts();
-    const strDates = dicts.
-      map(map => map.get('日付').toDateString());
+    const dicts = this.getDicts();
+    const strDates = dicts.map(map => map.get('日付').toDateString());
     return strDates;
   }
 
   /**
    * ヘッダーをキーとした Map の配列を作成するメソッド
-   * @return {Map[]} ヘッダーをキーとした Map
+   * @return {Map} ヘッダーをキーとした Map
    */
-  _getDicts() {
-    const headers = this._getHeaders();
-    const values = this._getDataValues();
-    const dicts = values.
-      map(record => record.
-        reduce((acc, cur, i) => acc.set(headers[i], cur), new Map()));
+  getDicts() {
+    const headers = this.getHeaders();
+    const values = this.getDataValues();
+    const dicts = values.map(record => record.reduce(
+      (acc, cur, i) => acc.set(headers[i], cur), new Map()));
     return dicts;
   }
 
@@ -42,45 +41,45 @@ class Sheet {
    * ヘッダーを取得するメソッド
    * @return {Array.<string>} ヘッダーの値
    */
-  _getHeaders() {
-    const headers = this._getDataRangeValues().
-      filter((_, i) => i < 1)[0];
+  getHeaders() {
+    const headers = this.getDataRangeValues().filter((_, i) => i < 1)[0];
     return headers;
   }
 
   /**
    * 実データ部分を取得するメソッド
-   * @return {Array.<Array.<number|string|Date|boolean>>} ヘッダー部分をのぞいた実データ
+   * @return {Array.<Array.<number|string|Date>>} ヘッダー部分をのぞいた実データ
    */
-  _getDataValues() {
-    const dataValues = this._getDataRangeValues().
-      filter((_, i) => i >= 1);
+  getDataValues() {
+    const dataValues = this.getDataRangeValues().filter((_, i) => i >= 1);
     return dataValues;
   }
 
   /**
    * シートの値すべて取得するメソッド 
-   * @return {Array.<Array.<number|string|Date|boolean>>} シートの値
+   * @return {Array.<Array.<number|string|Date>>} シートの値
    */
-  _getDataRangeValues() {
+  getDataRangeValues() {
     const dataRangeValues = this.sheet.getDataRange().getValues();
     return dataRangeValues;
   }
 
   /**
    * 対象シートの操作 (行追加・ソート) をするメソッド
-   * @param {Array.<Array.<number|string|Date|boolean>>} values - csv ファイルから取得した値
+   * @param {Array.<Array.<number|string|Date>>} values - csv ファイルから取得した値
    */
   operate(values) {
-    this._appendRows(values);
-    this._sortDataRows();
+    new Type(values, TYPE.ARRAY);
+    this.appendRows(values);
+    this.sortDataRows();
   }
 
   /**
-     * 最終行の下に値を貼り付けるメソッド
-     * @param {Array.<Array.<number|string|Date|boolean>>} values - 貼り付ける値
-     */
-  _appendRows(values) {
+   * 最終行の下に値を貼り付けるメソッド
+   * @param {Array.<Array.<number|string|Date>>} values - 貼り付ける値
+   */
+  appendRows(values) {
+    new Type(values, TYPE.ARRAY);
     this.sheet.
       getRange(this.sheet.getLastRow() + 1, 1, values.length, values[0].length).
       setValues(values);
@@ -89,7 +88,7 @@ class Sheet {
   /**
    * 値範囲でソートするメソッド
    */
-  _sortDataRows() {
+  sortDataRows() {
     this.sheet.
       getRange(2, 1, this.sheet.getLastRow() - 1, this.sheet.getLastColumn()).
       sort({ column: 2, ascending: false });

@@ -8,9 +8,10 @@ class Activity {
   /**
    * アクティビティに関するコンストラクタ
    * @constructor
-   * @param {Array.<number|string|Date|boolean>} record - オブジェクトを生成する行
+   * @param {Array.<number|string|Date>} record - オブジェクトを生成する行
    */
   constructor(record) {
+    new Type(record, TYPE.ARRAY);
     [
       this.type,
       this.date,
@@ -27,7 +28,7 @@ class Activity {
    * 開始時間を生成するメソッド
    * @return {Object} Date オブジェクト
    */
-  _getStartTme() {
+  getStartTme() {
     const startTime = new Date(this.date);
     return startTime;
   }
@@ -36,7 +37,7 @@ class Activity {
    * 終了時間を生成するメソッド
    * @return {Object} Date オブジェクト
    */
-  _getEndTime() {
+  getEndTime() {
     const endTime = new Date(this.date);
     const [hh, mm, ss] = this.time.split(':');
     endTime.setHours(endTime.getHours() + Number(hh));
@@ -49,7 +50,7 @@ class Activity {
    * カレンダーに反映する description 部分をオブジェクトとして生成するメソッド
    * @return {Object} Calendar サービスの createEvent メソッドに利用する options 
    */
-  _getOptions() {
+  getOptions() {
     const description =
       'アクティビティタイプ: ' + this.type + '\n' +
       '距離: ' + this.distance + ' km\n' +
@@ -66,12 +67,12 @@ class Activity {
    * 新しく追加されたアクティビティをカレンダーに反映するメソッド
    */
   createGoogleCalendarEvent() {
-    const calendar = CalendarApp.getCalendarById(PROPS.calendarId);
+    const calendar = CalendarApp.getCalendarById(PS.getProperty('GARMIN_CALENDAR_ID'));
     calendar.createEvent(
       this.title,
-      this._getStartTme(),
-      this._getEndTime(),
-      this._getOptions()
+      this.getStartTme(),
+      this.getEndTime(),
+      this.getOptions()
     );
   }
 
